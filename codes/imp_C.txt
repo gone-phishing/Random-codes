@@ -1,0 +1,258 @@
+
+//////////////////////////////////Tree //////////////////////////////////////
+#include<stdlib.h>
+#include<stdio.h>
+
+struct tree_el {
+   int val;
+   struct tree_el * right, * left;
+};
+
+typedef struct tree_el node;
+
+void insert(node ** tree, node * item) {
+   if(!(*tree)) {
+      *tree = item;
+      return;
+   }
+   if(item->val<(*tree)->val)
+      insert(&(*tree)->left, item);
+   else if(item->val>(*tree)->val)
+      insert(&(*tree)->right, item);
+}
+
+void printout(node * tree) {
+   if(tree->left) printout(tree->left);
+   printf("%d\n",tree->val);
+   if(tree->right) printout(tree->right);
+}
+
+void main() {
+   node * curr, * root;
+   int i;
+
+   root = NULL;
+
+   for(i=1;i<=10;i++) {
+      curr = (node *)malloc(sizeof(node));
+      curr->left = curr->right = NULL;
+      curr->val = rand();
+      insert(&root, curr);
+   }
+
+   printout(root);
+}
+
+///////////////////////////// Linked List /////////////////////////////////////
+#include<stdlib.h>
+#include<stdio.h>
+
+struct list_el {
+   int val;
+   struct list_el * next;
+};
+
+typedef struct list_el item;
+
+void main() {
+   item * curr, * head;
+   int i;
+
+   head = NULL;
+
+   for(i=1;i<=10;i++) {
+      curr = (item *)malloc(sizeof(item));
+      curr->val = i;
+      curr->next  = head;
+      head = curr;
+   }
+
+   curr = head;
+
+   while(curr) {
+      printf("%d\n", curr->val);
+      curr = curr->next ;
+   }
+}
+
+////////////////////////// Stack ////////////////////////////////////////////
+#include <stdio.h>
+
+#define MAXLEN 100
+
+typedef struct {
+   char element[MAXLEN];
+   int top;
+} stack;
+
+stack init ()
+{
+   stack S;
+
+   S.top = -1;
+   return S;
+}
+
+int isEmpty ( stack S )
+{
+   return (S.top == -1);
+}
+
+int isFull ( stack S )
+{
+   return (S.top == MAXLEN - 1);
+}
+
+char top ( stack S )
+{
+   if (isEmpty(S)) {
+      fprintf(stderr, "top: Empty stack\n");
+      return '\0';
+   }
+   return S.element[S.top];
+}
+
+stack push ( stack S , char ch )
+{
+   if (isFull(S)) {
+      fprintf(stderr, "push: Full stack\n");
+      return S;
+   }
+   ++S.top;
+   S.element[S.top] = ch;
+   return S;
+}
+
+stack pop ( stack S )
+{
+   if (isEmpty(S)) {
+      fprintf(stderr, "pop: Empty stack\n");
+      return S;
+   }
+   --S.top;
+   return S;
+}
+
+void print ( stack S )
+{
+   int i;
+
+   for (i = S.top; i >= 0; --i) printf("%c",S.element[i]);
+}
+
+int main ()
+{
+   stack S;
+
+   S = init(); printf("Current stack : "); print(S); printf(" with top = %c.\n", top(S));
+   S = push(S,'d'); printf("Current stack : "); print(S); printf(" with top = %c.\n", top(S));
+   S = push(S,'f'); printf("Current stack : "); print(S); printf(" with top = %c.\n", top(S));
+   S = push(S,'a'); printf("Current stack : "); print(S); printf(" with top = %c.\n", top(S));
+   S = pop(S); printf("Current stack : "); print(S); printf(" with top = %c.\n", top(S));
+   S = push(S,'x'); printf("Current stack : "); print(S); printf(" with top = %c.\n", top(S));
+   S = pop(S); printf("Current stack : "); print(S); printf(" with top = %c.\n", top(S));
+   S = pop(S); printf("Current stack : "); print(S); printf(" with top = %c.\n", top(S));
+   S = pop(S); printf("Current stack : "); print(S); printf(" with top = %c.\n", top(S));
+   S = pop(S); printf("Current stack : "); print(S); printf(" with top = %c.\n", top(S));
+}
+
+
+
+
+
+/// Merge Sort in C
+
+#include<stdlib.h>
+#include<stdio.h>
+
+/* Function to merge the two haves arr[l..m] and arr[m+1..r] of array arr[] */
+void merge(int arr[], int l, int m, int r)
+{
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 =  r - m;
+
+    /* create temp arrays */
+    int L[n1], R[n2];
+
+    /* Copy data to temp arrays L[] and R[] */
+    for(i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for(j = 0; j < n2; j++)
+        R[j] = arr[m + 1+ j];
+
+    /* Merge the temp arrays back into arr[l..r]*/
+    i = 0;
+    j = 0;
+    k = l;
+    while (i < n1 && j < n2)
+    {
+        if (L[i] <= R[j])
+        {
+            arr[k] = L[i];
+            i++;
+        }
+        else
+        {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    /* Copy the remaining elements of L[], if there are any */
+    while (i < n1)
+    {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    /* Copy the remaining elements of R[], if there are any */
+    while (j < n2)
+    {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+/* l is for left index and r is right index of the sub-array
+  of arr to be sorted */
+void mergeSort(int arr[], int l, int r)
+{
+    if (l < r)
+    {
+        int m = l+(r-l)/2; //Same as (l+r)/2, but avoids overflow for large l and h
+        mergeSort(arr, l, m);
+        mergeSort(arr, m+1, r);
+        merge(arr, l, m, r);
+    }
+}
+
+
+/* UITLITY FUNCTIONS */
+/* Function to print an array */
+void printArray(int A[], int size)
+{
+    int i;
+    for (i=0; i < size; i++)
+        printf("%d ", A[i]);
+    printf("\n");
+}
+
+/* Driver program to test above functions */
+int main()
+{
+    int arr[] = {12, 11, 13, 5, 6, 7};
+    int arr_size = sizeof(arr)/sizeof(arr[0]);
+
+    printf("Given array is \n");
+    printArray(arr, arr_size);
+
+    mergeSort(arr, 0, arr_size - 1);
+
+    printf("\nSorted array is \n");
+    printArray(arr, arr_size);
+    return 0;
+}
